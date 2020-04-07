@@ -2,6 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require("mongoose");
 const _ = require('lodash');
+
+
 const app = express();
 
 app.set('view engine', 'ejs');
@@ -62,6 +64,7 @@ app.get('/',function(req,res){
         });
         res.redirect("/");
       }
+      console.log(itemsFound);
       res.render('list',{listTitle:"Today",newListItems:itemsFound});
     }
   });
@@ -80,6 +83,7 @@ app.get('/:customlistName',function(req,res){
         list.save();
         res.redirect('/'+customlistName);
       }else{
+        console.log(listFound);
         res.render('list',{listTitle:listFound.name,newListItems: listFound.items});
       }
     }
@@ -98,8 +102,10 @@ app.post('/',function(req,res){
   });
 
   if(listName === "Today"){
-    newItem.save() //saves the newItem into database (its a mongoose method)
-    res.redirect("/");
+    newItem.save(function(){
+      res.redirect("/");
+    }) 
+    
   }
   else{
     // List.findOne({name: listName}, function(err, listFound){
