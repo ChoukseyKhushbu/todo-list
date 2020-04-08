@@ -82,9 +82,21 @@ app.get('/:customlistName',function(req,res){
         });
         list.save();
         res.redirect('/'+customlistName);
-      }else{
-        console.log(listFound);
-        res.render('list',{listTitle:listFound.name,newListItems: listFound.items});
+      }
+      else{
+          if(listFound.items.length==0){
+            console.log(listFound.items.length);
+            listFound.items.push(...defaultItems);
+            listFound.save(function(){
+              res.redirect("/"+customlistName);
+            });
+            
+          }
+          else{
+            console.log(listFound);
+            res.render('list',{listTitle:listFound.name,newListItems: listFound.items});
+          }
+        
       }
     }
   });
